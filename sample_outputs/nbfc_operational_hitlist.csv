@@ -1,0 +1,4 @@
+CustomerID,Vehicle_Model,Loan_Amount_INR,NPA_Probability,FOIR_Pct,CIBIL_Score
+100472,Toyota Innova Hycross (Hybrid MPV),2188591,0.7919,1.373,626
+100759,Tata Nexon EV (Electric SUV),1480221,0.7423,1.135,691
+101448,Tata Nexon EV (Electric SUV),1500774,0.6932,1.298,756
