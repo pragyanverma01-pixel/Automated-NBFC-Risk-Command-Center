@@ -108,3 +108,20 @@ def test_different_seeds_produce_different_output():
     df1 = generate_portfolio(num_records=100, seed=1)
     df2 = generate_portfolio(num_records=100, seed=2)
     assert not df1.equals(df2)
+
+
+# ── Edge cases ─────────────────────────────────────────────────────────────────
+
+def test_single_record_portfolio():
+    df = generate_portfolio(num_records=1, seed=0)
+    assert len(df) == 1
+    assert df.isnull().sum().sum() == 0
+    for col in REQUIRED_COLUMNS:
+        assert col in df.columns
+
+
+def test_zero_records_portfolio():
+    df = generate_portfolio(num_records=0, seed=0)
+    assert len(df) == 0
+    for col in REQUIRED_COLUMNS:
+        assert col in df.columns

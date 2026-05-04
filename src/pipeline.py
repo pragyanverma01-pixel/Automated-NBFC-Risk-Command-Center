@@ -57,21 +57,22 @@ def assign_interest_rates(cibil_scores, rng=None):
       >= 720 → 9.5–10.5 %
       >= 650 → 11.0–12.5 %
          else → 13.0–15.5 %
-    All tier buckets are sampled upfront (mirrors original notebook behaviour).
+    Draws exactly n samples by scaling one uniform draw per record to its tier range.
     """
     if rng is None:
         rng = np.random.default_rng(42)
     cibil_scores = np.asarray(cibil_scores, dtype=int)
     n = len(cibil_scores)
-    tier1 = rng.uniform(8.5, 9.2, n)
-    tier2 = rng.uniform(9.5, 10.5, n)
-    tier3 = rng.uniform(11.0, 12.5, n)
-    tier4 = rng.uniform(13.0, 15.5, n)
-    return np.where(
-        cibil_scores >= 780, tier1,
-        np.where(cibil_scores >= 720, tier2,
-        np.where(cibil_scores >= 650, tier3, tier4)),
-    ).round(2)
+
+    tier = np.where(cibil_scores >= 780, 0,
+           np.where(cibil_scores >= 720, 1,
+           np.where(cibil_scores >= 650, 2, 3)))
+
+    lows  = np.array([8.5,  9.5, 11.0, 13.0])
+    highs = np.array([9.2, 10.5, 12.5, 15.5])
+
+    u = rng.uniform(0.0, 1.0, n)
+    return (lows[tier] + u * (highs[tier] - lows[tier])).round(2)
 
 
 def calculate_npa_probability(foir_pct, cibil_scores, employment_types):
